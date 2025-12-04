@@ -17,11 +17,10 @@ def index(request):
 def about(request):
     return render(request, 'about.html')
 def destinations(request):
-    all_destinations = models.Destination.objects.all()
+    all_destinations = models.Destination.objects.annotate(
+        avg_rating=Avg('reviews__rating')
+    ).order_by('-avg_rating')
     return render(request, 'destinations.html', {'destinations': all_destinations})
-# def destinations(request):
-#     all_destinations = models.Destination.objects.all()
-#     return render(request, 'destinations.html', { 'destinations': all_destinations})
 
 class DestinationDetailView(generic.DetailView):
     template_name = 'destination_detail.html'
