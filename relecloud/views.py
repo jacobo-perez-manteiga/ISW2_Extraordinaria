@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden
 from django.db.models import Avg
+from django.db.models import Count
 from .forms import ReviewForm
 
 # Create your views here.
@@ -18,8 +19,9 @@ def about(request):
     return render(request, 'about.html')
 def destinations(request):
     all_destinations = models.Destination.objects.annotate(
-        avg_rating=Avg('reviews__rating')
-    ).order_by('-avg_rating')
+        avg_rating=Avg('reviews__rating'),
+        review_count=Count('reviews')
+    ).order_by('-review_count', '-avg_rating')
     return render(request, 'destinations.html', {'destinations': all_destinations})
 
 class DestinationDetailView(generic.DetailView):
