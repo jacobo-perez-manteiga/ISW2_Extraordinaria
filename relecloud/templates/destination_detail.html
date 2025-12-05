@@ -8,15 +8,13 @@ ReleCloud - {{ destination }}
 
 {% block content %}
 <h1>{{ destination }}</h1>
-{% if destination.image %}
-    <div class="mb-4">
-        <img src="{{ destination.image.url }}" alt="Imagen de {{ destination.name }}" class="img-fluid rounded" style="max-height: 400px; object-fit: cover;">
-    </div>
-{% else %}
-    <div class="mb-4">
-        <img src="{% static 'res/img/placeholder-destination.svg' %}" alt="Imagen placeholder para {{ destination.name }}" class="img-fluid rounded" style="max-height: 400px; object-fit: cover;">
-    </div>
-{% endif %}
+<div class="destination-detail-image-wrapper">
+    {% if destination.image %}
+        <img src="{{ destination.image.url }}" alt="Imagen de {{ destination.name }}" class="destination-detail-image">
+    {% else %}
+        <img src="{% static 'res/img/placeholder-destination.svg' %}" alt="Imagen placeholder para {{ destination.name }}" class="destination-detail-image destination-placeholder">
+    {% endif %}
+</div>
 <p>
 {{ destination.description }}
 </p>

@@ -12,12 +12,14 @@ If you can imagine it, we travel to it! Below is our list of confirmed destinati
 </p>
 <ul class="list-group">
     {% for destination in destinations %}
-    <a class="list-group-item list-group-item-action d-flex align-items-center" href="{% url 'destination_detail' destination.id %}">
-        {% if destination.image %}
-            <img src="{{ destination.image.url }}" alt="Imagen de {{ destination.name }}" class="img-thumbnail me-3" style="width: 80px; height: 80px; object-fit: cover;">
-        {% else %}
-            <img src="{% static 'res/img/placeholder-destination.svg' %}" alt="Imagen placeholder para {{ destination.name }}" class="img-thumbnail me-3" style="width: 80px; height: 80px; object-fit: cover;">
-        {% endif %}
+    <a class="list-group-item list-group-item-action destination-item d-flex align-items-center" href="{% url 'destination_detail' destination.id %}">
+        <div class="destination-thumbnail-wrapper">
+            {% if destination.image %}
+                <img src="{{ destination.image.url }}" alt="Imagen de {{ destination.name }}" class="destination-thumbnail">
+            {% else %}
+                <img src="{% static 'res/img/placeholder-destination.svg' %}" alt="Imagen placeholder para {{ destination.name }}" class="destination-thumbnail destination-placeholder">
+            {% endif %}
+        </div>
         <span>{{ destination }}</span>
     </a>
     {% endfor %}
