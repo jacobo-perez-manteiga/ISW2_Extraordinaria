@@ -1,43 +1,41 @@
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.core import mail
-from django.contrib.messages import get_messages
 from unittest.mock import patch
 
-from .models import Cruise, InfoRequest
+from relecloud.models import Cruise, InfoRequest
 
 
 @override_settings(EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend')
-class InfoRequestEmailTests(TestCase):
+class PruebasEnvioEmailInfoRequest(TestCase):
 
     def setUp(self):
-        self.cruise = Cruise.objects.create(name='Test Cruise', description='A test cruise')
+        self.cruise = Cruise.objects.create(name='Crucero Prueba', description='Crucero de prueba')
 
-    def test_successful_submit_sends_email_and_saves(self):
+    def test_envio_valido_guarda_y_envia_email(self):
         data = {
             'name': 'juan',
             'email': 'juan@example.com',
             'cruise': str(self.cruise.pk),
-            'notes': 'jajajaj'
+            'notes': 'consulta de prueba'
         }
         response = self.client.post(reverse('info_request'), data, follow=True)
 
         self.assertEqual(InfoRequest.objects.count(), 1)
 
         self.assertEqual(len(mail.outbox), 1)
-        sent = mail.outbox[0]
-        subject_lower = sent.subject.lower()
-        # subject wording may vary; assert key parts are present
+        enviado = mail.outbox[0]
+        subject_lower = enviado.subject.lower()
         self.assertIn('informacion', subject_lower)
         self.assertIn('recibida', subject_lower)
         self.assertIn(self.cruise.name.lower(), subject_lower)
 
-    def test_invalid_email_shows_form_error_and_not_saved(self):
+    def test_email_invalido_no_guarda_muestra_error(self):
         data = {
             'name': 'pepe',
             'email': 'no email',
             'cruise': str(self.cruise.pk),
-            'notes': 'email invalido test'
+            'notes': 'email invalido prueba'
         }
         response = self.client.post(reverse('info_request'), data)
 
@@ -48,21 +46,43 @@ class InfoRequestEmailTests(TestCase):
         self.assertTrue(form.errors)
         self.assertIn('email', form.errors)
 
-    def test_send_mail_failure_is_handled_and_message_shown(self):
+    def test_fallo_smtp_persistir_y_mensaje(self):
         data = {
             'name': 'Carlos',
             'email': 'carlos@example.com',
             'cruise': str(self.cruise.pk),
-            'notes': 'SMTP fail test'
+            'notes': 'falla smtp'
         }
 
         with patch('relecloud.views.send_mail', side_effect=Exception('SMTP fail')):
             response = self.client.post(reverse('info_request'), data, follow=True)
 
         self.assertEqual(InfoRequest.objects.count(), 1)
-
         self.assertEqual(len(mail.outbox), 0)
 
         messages = list(response.context.get('messages', []))
         self.assertTrue(any('No se pudo enviar el email de confirmacion' in str(m) for m in messages))
 
+
+class PruebasFormularioInfoRequest_RED(TestCase):
+
+    def test_existe_clase_InfoRequestForm(self):
+        from relecloud import forms
+
+        self.assertTrue(
+            hasattr(forms, 'InfoRequestForm'),
+            'Se esperaba que InfoRequestForm estuviera definido en relecloud.forms'
+        )
+
+    def test_vista_usa_form_class(self):
+        from relecloud import forms, views
+
+        self.assertTrue(
+            hasattr(views.InfoRequestCreate, 'form_class'),
+            'Se esperaba que InfoRequestCreate definiera form_class'
+        )
+        self.assertEqual(
+            views.InfoRequestCreate.form_class,
+            forms.InfoRequestForm,
+            'InfoRequestCreate.form_class debe ser InfoRequestForm'
+        )
