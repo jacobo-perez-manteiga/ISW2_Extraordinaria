@@ -1,5 +1,5 @@
 from django import forms
-from .models import Review
+from .models import Review, InfoRequest
 
 
 class ReviewForm(forms.ModelForm):
@@ -17,4 +17,16 @@ class ReviewForm(forms.ModelForm):
                 'placeholder': 'Escribe tu opinión...',
                 'rows': 4
             }),
+        }
+
+
+class InfoRequestForm(forms.ModelForm):
+    class Meta:
+        model = InfoRequest
+        fields = ['name', 'email', 'cruise', 'notes']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Tu nombre'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Tu email'}),
+            'notes': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Escribe tu consulta', 'rows': 4}),
+            'cruise': forms.Select(attrs={'class': 'form-control'}),
         }
