@@ -10,7 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden
 from django.db.models import Avg
 from django.db.models import Count
-from .forms import ReviewForm
+from .forms import ReviewForm, InfoRequestForm
 
 # Create your views here.
 def index(request):
@@ -98,7 +98,7 @@ class CruiseDetailView(generic.DetailView):
 class InfoRequestCreate(SuccessMessageMixin, generic.CreateView):
     template_name = 'info_request_create.html'
     model = models.InfoRequest
-    fields = ['name', 'email', 'cruise', 'notes']
+    form_class = InfoRequestForm
     success_url = reverse_lazy('index')
     success_message = 'Thank you, %(name)s! We will email you when we have more information about %(cruise)s!'
     

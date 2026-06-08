@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -98,6 +99,17 @@ DATABASES = {
         },
     }
 }
+
+# During local test runs, prefer an in-memory SQLite database to avoid
+# relying on the remote Azure Postgres instance. This is a safe, local-only
+# override that speeds up tests and avoids network/timeouts.
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        }
+    }
 
 
 # Password validation
