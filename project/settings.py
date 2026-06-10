@@ -28,7 +28,7 @@ DEBUG = True  # Temporal para ver por qué no cargan los archivos estáticos
 
 ALLOWED_HOSTS = [
     'jacobosw.azurewebsites.net',
-    'practicasoftware.azurewebsites.net',
+    'practicasoftware-a7ataubcdnh2b9hh.switzerlandnorth-01.azurewebsites.net',
     'localhost',
     '127.0.0.1',
     '*'  # Temporal para debugging
@@ -158,7 +158,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
-CSRF_TRUSTED_ORIGINS = ['https://practicasoftware.azurewebsites.net']
+CSRF_TRUSTED_ORIGINS = ['https://practicasoftware-a7ataubcdnh2b9hh.switzerlandnorth-01.azurewebsites.net']
 
 # Email configuration (use environment variables in production)
 # Prefer environment variables; do NOT commit credentials in source code.
