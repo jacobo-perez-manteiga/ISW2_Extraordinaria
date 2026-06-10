@@ -152,7 +152,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Directorios donde buscar archivos estáticos
 STATICFILES_DIRS = [
-    BASE_DIR / 'relecloud' / 'staticfiles',
+    BASE_DIR / 'relecloud' / 'static',
 ]
 
 STORAGES = {
