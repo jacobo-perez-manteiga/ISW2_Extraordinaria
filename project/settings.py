@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 import sys
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -151,11 +152,17 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Directorios donde buscar archivos estáticos
 STATICFILES_DIRS = [
-    BASE_DIR / 'relecloud' / 'static',
+    BASE_DIR / 'relecloud' / 'staticfiles',
 ]
 
-# Configuración simple para WhiteNoise (sin compresión por ahora)
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+    },
+}
 
 # Configuración de archivos media (imágenes subidas por usuarios)
 MEDIA_URL = '/media/'
