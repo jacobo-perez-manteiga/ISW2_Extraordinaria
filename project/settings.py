@@ -29,6 +29,7 @@ DEBUG = True  # Temporal para ver por qué no cargan los archivos estáticos
 
 ALLOWED_HOSTS = [
     'jacobosw.azurewebsites.net',
+    'practicasoftware-a7ataubcdnh2b9hh.switzerlandnorth-01.azurewebsites.net',
     'localhost',
     '127.0.0.1',
     '*'  # Temporal para debugging
@@ -89,9 +90,9 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "postgres",
-        "USER": "jacobo",
-        "PASSWORD": os.getenv("DB_PASSWORD", "asdf1234!"),
-        "HOST": "jacobodb.postgres.database.azure.com",
+        "USER": "Geert",
+        "PASSWORD": os.getenv("DB_PASSWORD", "asdfASDF1234"),
+        "HOST": "practicasoftwaredb.postgres.database.azure.com",
         "PORT": "5432",
         "OPTIONS": {
             "sslmode": "require",
@@ -169,7 +170,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
-CSRF_TRUSTED_ORIGINS = ['https://jacobosw.azurewebsites.net']
+CSRF_TRUSTED_ORIGINS = ['https://practicasoftware-a7ataubcdnh2b9hh.switzerlandnorth-01.azurewebsites.net']
 
 # Referencia de los valores que se usaban antes de externalizar la configuración:
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

@@ -8,16 +8,16 @@ trigger:
 
 variables:
   # Azure Resource Manager connection created during pipeline creation
-  azureServiceConnectionId: '711528ab-e97e-4b64-b99d-86c0717a9ad3'
+  azureServiceConnectionId: '9033a423-e5a7-4ddc-adba-d6042da0d0a9'
 
   # Web app name
-  webAppName: 'jacobosw'
+  webAppName: 'practicasoftware'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
   # Environment name
-  environmentName: 'jacobosw'
+  environmentName: 'practicasoftware'
 
   # Project root folder. Point to the folder containing manage.py file.
   projectRoot: $(System.DefaultWorkingDirectory)
@@ -79,8 +79,9 @@ stages:
             displayName: 'Use Python version'
 
           - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App : jacobosw'
+            displayName: 'Deploy Azure Web App : practicasoftware'
             inputs:
               azureSubscription: $(azureServiceConnectionId)
               appName: $(webAppName)
               package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
+              startUpCommand: 'python manage.py migrate && python manage.py shell -c "from django.contrib.auth.models import User; User.objects.filter(username=\"admin\").exists() or User.objects.create_superuser(\"admin\", \"admin@example.com\", \"admin1234\")" && gunicorn --bind=0.0.0.0 --timeout 600 project.wsgi'
