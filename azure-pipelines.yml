@@ -79,8 +79,9 @@ stages:
             displayName: 'Use Python version'
 
           - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App : jacobosw'
+            displayName: 'Deploy Azure Web App : practicasoftware'
             inputs:
               azureSubscription: $(azureServiceConnectionId)
               appName: $(webAppName)
               package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
+              startUpCommand: 'python manage.py migrate && gunicorn --bind=0.0.0.0 --timeout 600 project.wsgi'
