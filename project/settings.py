@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -99,6 +100,17 @@ DATABASES = {
     }
 }
 
+# During local test runs, prefer an in-memory SQLite database to avoid
+# relying on the remote Azure Postgres instance. This is a safe, local-only
+# override that speeds up tests and avoids network/timeouts.
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        }
+    }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -160,30 +172,26 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 CSRF_TRUSTED_ORIGINS = ['https://practicasoftware-a7ataubcdnh2b9hh.switzerlandnorth-01.azurewebsites.net']
 
-# Email configuration (use environment variables in production)
-# Prefer environment variables; do NOT commit credentials in source code.
-# EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
-# EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
-# # Ensure port is an int
-# EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
-# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
-# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
-# # Robust boolean parsing for TLS
-# EMAIL_USE_TLS = str(os.getenv('EMAIL_USE_TLS', 'True')).lower() in ('true', '1', 'yes')
-# DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER or 'webmaster@localhost')
+# Referencia de los valores que se usaban antes de externalizar la configuración:
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'jacobopm05@gmail.com'
+# EMAIL_HOST_PASSWORD = 'uujhjdwkaatjolyfv'
+# DEFAULT_FROM_EMAIL = 'jacobopm05@gmail.com'
+# SERVER_EMAIL = 'jacobopm05@gmail.com'
 
-# # Development convenience: when DEBUG=True and no explicit backend set, use console backend
-# if DEBUG and os.getenv('DJANGO_EMAIL_BACKEND') is None:
-#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# Configuración para enviar emails reales con Gmail
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'jacobopm05@gmail.com'
-EMAIL_HOST_PASSWORD = 'ujhjdwkaatjolyfv'
+# Configuración de email por variables de entorno.
+# Requiere definir: EMAIL_HOST_USER, EMAIL_HOST_PASSWORD y, si se desea,
+# DEFAULT_FROM_EMAIL / SERVER_EMAIL.
+EMAIL_BACKEND = os.getenv('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = str(os.getenv('EMAIL_USE_TLS', 'True')).lower() in ('true', '1', 'yes')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 
 # Remitente por defecto
-DEFAULT_FROM_EMAIL = 'jacobopm05@gmail.com'
-SERVER_EMAIL = 'jacobopm05@gmail.com'
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER or 'webmaster@localhost')
+SERVER_EMAIL = os.getenv('SERVER_EMAIL', DEFAULT_FROM_EMAIL)
