@@ -31,9 +31,24 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'about' %}">About</a>
                 </li>
-                {% comment %} <li class="nav-item">
-                    <a class="nav-link" href="#">Login</a>
-                </li> {% endcomment %}
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <span class="nav-link text-light">{{ user.username }}</span>
+                </li>
+                <li class="nav-item">
+                    <form method="post" action="{% url 'account_logout' %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-link nav-link text-light p-0">Cerrar sesión</button>
+                    </form>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account_login' %}">Iniciar sesión</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account_signup' %}">Registrarse</a>
+                </li>
+                {% endif %}
             </ul>
         </div>
     </nav>
