@@ -133,7 +133,7 @@ class ReviewCreateDestination(LoginRequiredMixin, generic.CreateView):
     model = models.Review
     form_class = ReviewForm
     template_name = 'review_form.html'
-    login_url = 'login'
+    login_url = 'account_login'
 
     def dispatch(self, request, *args, **kwargs):
         # Obtener el destino
@@ -163,7 +163,7 @@ class ReviewCreateCruise(LoginRequiredMixin, generic.CreateView):
     model = models.Review
     form_class = ReviewForm
     template_name = 'review_form.html'
-    login_url = 'login'
+    login_url = 'account_login'
 
     def dispatch(self, request, *args, **kwargs):
         # Obtener el crucero

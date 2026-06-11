@@ -32,7 +32,13 @@ ReleCloud - {{ cruise }}
     {% endif %}
 {% else %}
     <div class="alert alert-info" role="alert">
-        <a href="{% url 'login' %}">Inicia sesión</a> para dejar una reseña.
+        <p class="mb-2">Debes iniciar sesión o registrarte para dejar una reseña.</p>
+        <a href="{% url 'account_login' %}?next={{ request.path }}" class="btn btn-primary btn-sm mr-2">
+            Iniciar sesión
+        </a>
+        <a href="{% url 'account_signup' %}?next={{ request.path }}" class="btn btn-outline-primary btn-sm">
+            Registrarse
+        </a>
     </div>
 {% endif %}
 
