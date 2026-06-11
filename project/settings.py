@@ -106,14 +106,19 @@ DATABASES = {
     }
 }
 
-# During local test runs, prefer an in-memory SQLite database to avoid
-# relying on the remote Azure Postgres instance. This is a safe, local-only
-# override that speeds up tests and avoids network/timeouts.
+# Tests: SQLite en memoria. Desarrollo local sin Azure: DJANGO_USE_SQLITE=true
 if 'test' in sys.argv:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': ':memory:',
+        }
+    }
+elif os.getenv('DJANGO_USE_SQLITE'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
@@ -140,7 +145,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
