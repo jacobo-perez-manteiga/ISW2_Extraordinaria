@@ -133,15 +133,14 @@ class ReviewCreateDestination(LoginRequiredMixin, generic.CreateView):
     model = models.Review
     form_class = ReviewForm
     template_name = 'review_form.html'
-    login_url = 'login'
+    login_url = 'account_login'
 
     def dispatch(self, request, *args, **kwargs):
-        # Obtener el destino
         self.destination = models.Destination.objects.get(pk=self.kwargs['destination_id'])
-        # Verificar si el usuario ya tiene una reseña para este destino
-        existing_review = self.destination.reviews.filter(user=request.user).exists()
-        if existing_review:
-            return HttpResponseForbidden("Ya has dejado una reseña para este destino")
+        if request.user.is_authenticated:
+            existing_review = self.destination.reviews.filter(user=request.user).exists()
+            if existing_review:
+                return HttpResponseForbidden("Ya has dejado una reseña para este destino")
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -163,15 +162,14 @@ class ReviewCreateCruise(LoginRequiredMixin, generic.CreateView):
     model = models.Review
     form_class = ReviewForm
     template_name = 'review_form.html'
-    login_url = 'login'
+    login_url = 'account_login'
 
     def dispatch(self, request, *args, **kwargs):
-        # Obtener el crucero
         self.cruise = models.Cruise.objects.get(pk=self.kwargs['cruise_id'])
-        # Verificar si el usuario ya tiene una reseña para este crucero
-        existing_review = self.cruise.reviews.filter(user=request.user).exists()
-        if existing_review:
-            return HttpResponseForbidden("Ya has dejado una reseña para este crucero")
+        if request.user.is_authenticated:
+            existing_review = self.cruise.reviews.filter(user=request.user).exists()
+            if existing_review:
+                return HttpResponseForbidden("Ya has dejado una reseña para este crucero")
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
