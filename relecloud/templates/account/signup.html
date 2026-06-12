@@ -4,13 +4,14 @@
 {% block title %}ReleCloud - Registrarse{% endblock %}
 
 {% block content %}
+{# Columna centrada con card Bootstrap — patrón común a todos los templates de autenticación #}
 <div class="row justify-content-center mt-4">
     <div class="col-md-6">
         <div class="card shadow-sm">
             <div class="card-body p-4">
                 <h2 class="tk-elevon mb-4 text-center">Crear cuenta</h2>
 
-                <form method="post">
+                <form method="post" novalidate>
                     {% csrf_token %}
                     {{ form|crispy }}
                     <button type="submit" class="btn btn-primary btn-block mt-2">Crear cuenta</button>
