@@ -23,17 +23,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-y!rjq91k$sfr1!7+n1ym5$l552&z2u7%z!bmn)yq$m5wagt&'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-y!rjq91k$sfr1!7+n1ym5$l552&z2u7%z!bmn)yq$m5wagt&')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # Temporal para ver por qué no cargan los archivos estáticos
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = [
     'jacobosw.azurewebsites.net',
     'practicasoftware-a7ataubcdnh2b9hh.switzerlandnorth-01.azurewebsites.net',
     'localhost',
     '127.0.0.1',
-    '*'  # Temporal para debugging
 ]
 
 
