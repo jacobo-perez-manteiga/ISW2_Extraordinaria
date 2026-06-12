@@ -8,8 +8,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden
-from django.db.models import Avg
-from django.db.models import Count
+from django.db.models import Avg, Count
 from .forms import ReviewForm, InfoRequestForm
 
 # Create your views here.
@@ -18,13 +17,13 @@ def index(request):
 def about(request):
     return render(request, 'about.html')
 def destinations(request):
-    all_destinations = models.Destination.objects.annotate(
+    destinations = list(models.Destination.objects.annotate(
         avg_rating=Avg('reviews__rating'),
         review_count=Count('reviews', distinct=True)
-    ).order_by('-review_count', '-avg_rating', 'name')
+    ).order_by('-review_count', '-avg_rating', 'name'))
     return render(request, 'destinations.html', {
-        'destinations': all_destinations,
-        'destination_count': all_destinations.count(),
+        'destinations': destinations,
+        'destination_count': len(destinations),
     })
 
 class DestinationDetailView(generic.DetailView):

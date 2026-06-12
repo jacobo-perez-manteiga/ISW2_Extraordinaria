@@ -13,7 +13,7 @@ Si puedes imaginarlo, ¡viajamos allí! A continuación encontrarás nuestra lis
 {% if destination_count %}
 <p class="text-muted"><small>{{ destination_count }} destino{{ destination_count|pluralize }} disponible{{ destination_count|pluralize }}</small></p>
 {% endif %}
-<ul class="list-group">
+<ul class="list-group" aria-label="Lista de destinos ordenados por popularidad">
     {% for destination in destinations %}
     <a class="list-group-item list-group-item-action destination-item d-flex align-items-center" href="{% url 'destination_detail' destination.id %}">
         <div class="destination-thumbnail-wrapper">
