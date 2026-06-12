@@ -29,6 +29,10 @@ ReleCloud - {{ cruise }}
         <div class="alert alert-warning" role="alert">
             Ya has dejado una reseña para este crucero.
         </div>
+    {% else %}
+        <div class="alert alert-secondary" role="alert">
+            Solo los usuarios que han comprado este crucero pueden dejar una reseña.
+        </div>
     {% endif %}
 {% else %}
     <div class="alert alert-info" role="alert">

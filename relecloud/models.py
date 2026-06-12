@@ -122,3 +122,34 @@ class Review(models.Model):
         if self.destination:
             return f"Reseña de {self.user.username} sobre {self.destination.name}"
         return f"Reseña de {self.user.username} sobre {self.cruise.name}"
+
+
+class Purchase(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='purchases'
+    )
+    cruise = models.ForeignKey(
+        Cruise,
+        on_delete=models.CASCADE,
+        related_name='purchases',
+        null=True,
+        blank=True
+    )
+    destination = models.ForeignKey(
+        Destination,
+        on_delete=models.CASCADE,
+        related_name='purchases',
+        null=True,
+        blank=True
+    )
+    purchased_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [['user', 'cruise'], ['user', 'destination']]
+
+    def __str__(self):
+        if self.cruise:
+            return f"Compra de {self.user.username}: {self.cruise.name}"
+        return f"Compra de {self.user.username}: {self.destination.name}"

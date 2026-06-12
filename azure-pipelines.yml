@@ -41,10 +41,15 @@ stages:
         python -m venv antenv
         source antenv/bin/activate
         python -m pip install --upgrade pip
-        pip install setup
         pip install -r requirements.txt
       workingDirectory: $(projectRoot)
       displayName: "Install requirements"
+
+    - script: |
+        source antenv/bin/activate
+        python manage.py test --verbosity=2
+      workingDirectory: $(projectRoot)
+      displayName: "Run tests"
 
     - task: ArchiveFiles@2
       displayName: 'Archive files'

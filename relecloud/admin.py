@@ -7,6 +7,14 @@ admin.site.register(models.Destination)
 admin.site.register(models.InfoRequest)
 
 
+@admin.register(models.Purchase)
+class PurchaseAdmin(admin.ModelAdmin):
+    list_display = ('user', 'cruise', 'destination', 'purchased_at')
+    list_filter = ('purchased_at',)
+    search_fields = ('user__username',)
+    readonly_fields = ('purchased_at',)
+
+
 @admin.register(models.Review)
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ('user', 'rating', 'title', 'created_at')
