@@ -4,16 +4,25 @@
 {% block title %}ReleCloud - Iniciar sesión{% endblock %}
 
 {% block content %}
-<h2 class="tk-elevon mb-4">Iniciar sesión</h2>
+{# Columna centrada con card Bootstrap — patrón común a todos los templates de autenticación #}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="tk-elevon mb-4 text-center">Iniciar sesión</h2>
 
-<form method="post" class="mt-3">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <button type="submit" class="btn btn-primary mt-2">Entrar</button>
-</form>
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary btn-block mt-2">Entrar</button>
+                </form>
 
-<p class="mt-3">
-    ¿No tienes cuenta?
-    <a href="{% url 'account_signup' %}">Regístrate aquí</a>
-</p>
+                <p class="mt-3 text-center">
+                    ¿No tienes cuenta?
+                    <a href="{% url 'account_signup' %}">Regístrate aquí</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
