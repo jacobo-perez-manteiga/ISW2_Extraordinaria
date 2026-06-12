@@ -14,8 +14,10 @@ from .forms import ReviewForm, InfoRequestForm
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
+
 def about(request):
     return render(request, 'about.html')
+
 def destinations(request):
     destinations = list(models.Destination.objects.annotate(
         avg_rating=Avg('reviews__rating'),
@@ -41,15 +43,10 @@ class DestinationDetailView(generic.DetailView):
 
         if self.request.user.is_authenticated:
             user_review = reviews.filter(user=self.request.user).first()
-            has_purchase = models.Purchase.objects.filter(
-                user=self.request.user, destination=self.object
-            ).exists()
             context['user_review'] = user_review
-            context['has_purchase'] = has_purchase
-            context['can_review'] = has_purchase and not user_review
+            context['can_review'] = not user_review
         else:
             context['can_review'] = False
-            context['has_purchase'] = False
 
         return context
 
@@ -85,15 +82,10 @@ class CruiseDetailView(generic.DetailView):
 
         if self.request.user.is_authenticated:
             user_review = reviews.filter(user=self.request.user).first()
-            has_purchase = models.Purchase.objects.filter(
-                user=self.request.user, cruise=cruise
-            ).exists()
             context['user_review'] = user_review
-            context['has_purchase'] = has_purchase
-            context['can_review'] = has_purchase and not user_review
+            context['can_review'] = not user_review
         else:
             context['can_review'] = False
-            context['has_purchase'] = False
 
         return context
 
@@ -137,8 +129,6 @@ class ReviewCreateDestination(LoginRequiredMixin, generic.CreateView):
     def dispatch(self, request, *args, **kwargs):
         self.destination = models.Destination.objects.get(pk=self.kwargs['destination_id'])
         if request.user.is_authenticated:
-            if not models.Purchase.objects.filter(user=request.user, destination=self.destination).exists():
-                return HttpResponseForbidden("Debes haber comprado este destino para poder reseñarlo.")
             if self.destination.reviews.filter(user=request.user).exists():
                 return HttpResponseForbidden("Ya has dejado una reseña para este destino.")
         return super().dispatch(request, *args, **kwargs)
@@ -166,8 +156,6 @@ class ReviewCreateCruise(LoginRequiredMixin, generic.CreateView):
     def dispatch(self, request, *args, **kwargs):
         self.cruise = models.Cruise.objects.get(pk=self.kwargs['cruise_id'])
         if request.user.is_authenticated:
-            if not models.Purchase.objects.filter(user=request.user, cruise=self.cruise).exists():
-                return HttpResponseForbidden("Debes haber comprado este crucero para poder reseñarlo.")
             if self.cruise.reviews.filter(user=request.user).exists():
                 return HttpResponseForbidden("Ya has dejado una reseña para este crucero.")
         return super().dispatch(request, *args, **kwargs)
