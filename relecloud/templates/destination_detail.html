@@ -28,7 +28,7 @@ ReleCloud - {{ destination }}
 
 <!-- Sección de Reseñas -->
 <hr>
-<h3 class="mt-4 mb-3">Reseñas</h3>
+<h3 class="mt-4 mb-3">Reseñas {% if review_count %}({{ review_count }}){% endif %}</h3>
 
 {% if user.is_authenticated %}
     {% if can_review %}
@@ -52,13 +52,12 @@ ReleCloud - {{ destination }}
     </div>
 {% endif %}
 
-<!-- Puntuación Media -->
-<div class="alert alert-info mb-4">
-    <strong>Puntuación media:</strong>
+<div class="mb-3">
     {% if average_rating %}
-        <span class="badge bg-primary">{{ average_rating }}/5</span> ({{ review_count }} reseña{{ review_count|pluralize }})
+        <span class="badge badge-primary">{{ average_rating }}/5</span>
+        <span class="text-muted small ml-1">puntuación media</span>
     {% else %}
-        <span class="text-muted">Sin reseñas aún</span>
+        <span class="badge badge-secondary">Sin reseñas aún</span>
     {% endif %}
 </div>
 
@@ -70,7 +69,7 @@ ReleCloud - {{ destination }}
             <div class="card-body">
                 <h5 class="card-title">
                     {{ review.title }}
-                    <span class="badge badge-warning float-right">{{ review.rating }}/5 ⭐</span>
+                    <span class="badge badge-warning float-right">{{ review.rating }}/5</span>
                 </h5>
                 <p class="card-text">{{ review.comment }}</p>
                 <small class="text-muted">

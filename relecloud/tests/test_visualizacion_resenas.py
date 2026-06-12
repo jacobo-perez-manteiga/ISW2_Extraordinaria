@@ -188,7 +188,7 @@ class TestVisualizacionRatingEnListaDestinos(TestCase):
             rating=3, title='B', comment='B'
         )
         response = self.client.get(self.url)
-        self.assertContains(response, '2 reviews')
+        self.assertContains(response, '2 reseñas')
 
     def test_lista_destinos_ordena_por_popularidad(self):
         """Los destinos con más reseñas aparecen primero en la lista."""

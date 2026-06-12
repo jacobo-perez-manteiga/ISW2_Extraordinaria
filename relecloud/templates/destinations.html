@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-ReleCloud - Destinations
+ReleCloud - Destinos
 {% endblock %}
 
 {% block content %}
@@ -10,7 +10,10 @@ ReleCloud - Destinations
 <p>
 Si puedes imaginarlo, ¡viajamos allí! A continuación encontrarás nuestra lista de destinos confirmados.
 </p>
-<ul class="list-group">
+{% if destination_count %}
+<p class="text-muted"><small>{{ destination_count }} destino{{ destination_count|pluralize }} disponible{{ destination_count|pluralize }}</small></p>
+{% endif %}
+<ul class="list-group" aria-label="Lista de destinos ordenados por popularidad">
     {% for destination in destinations %}
     <a class="list-group-item list-group-item-action destination-item d-flex align-items-center" href="{% url 'destination_detail' destination.id %}">
         <div class="destination-thumbnail-wrapper">
@@ -20,14 +23,15 @@ Si puedes imaginarlo, ¡viajamos allí! A continuación encontrarás nuestra lis
                 <img src="{% static 'res/img/placeholder-destination.svg' %}" alt="Imagen placeholder para {{ destination.name }}" class="destination-thumbnail destination-placeholder">
             {% endif %}
         </div>
-        <span>{{ destination }}</span>
+        <span class="destination-name">{{ destination }}</span>
         {% if destination.avg_rating %}
-        <span class="badge badge-primary rounded-pill ml-auto">{{ destination.avg_rating|floatformat:1 }}</span>
-        <span class="badge badge-info rounded-pill ml-2">{{ destination.review_count }} reviews</span>
+        <span class="badge badge-primary ml-auto">{{ destination.avg_rating|floatformat:1 }} - {{ destination.review_count }} reseña{{ destination.review_count|pluralize }}</span>
         {% else %}
-        <span class="badge badge-secondary rounded-pill ml-auto">Sin valoraciones</span>
+        <span class="badge badge-secondary ml-auto">Sin valoraciones</span>
         {% endif %}
     </a>
+    {% empty %}
+    <li class="list-group-item text-muted">No hay destinos disponibles aún.</li>
     {% endfor %}
 </ul>
 {% endblock content %}

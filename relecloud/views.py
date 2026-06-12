@@ -8,8 +8,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden
-from django.db.models import Avg
-from django.db.models import Count
+from django.db.models import Avg, Count
 from .forms import ReviewForm, InfoRequestForm
 
 # Create your views here.
@@ -18,11 +17,14 @@ def index(request):
 def about(request):
     return render(request, 'about.html')
 def destinations(request):
-    all_destinations = models.Destination.objects.annotate(
+    destinations = list(models.Destination.objects.annotate(
         avg_rating=Avg('reviews__rating'),
-        review_count=Count('reviews')
-    ).order_by('-review_count', '-avg_rating')
-    return render(request, 'destinations.html', {'destinations': all_destinations})
+        review_count=Count('reviews', distinct=True)
+    ).order_by('-review_count', '-avg_rating', 'name'))
+    return render(request, 'destinations.html', {
+        'destinations': destinations,
+        'destination_count': len(destinations),
+    })
 
 class DestinationDetailView(generic.DetailView):
     template_name = 'destination_detail.html'
@@ -31,18 +33,12 @@ class DestinationDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        destination = self.get_object()
-
-        # Obtener reseñas del destino
-        reviews = destination.reviews.all()
-        context['reviews'] = reviews
-
-        # Calcular puntuación media
+        reviews = self.object.reviews.all()
         avg_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+        context['reviews'] = reviews
         context['average_rating'] = round(avg_rating, 1) if avg_rating else 0
         context['review_count'] = reviews.count()
 
-        # Verificar si el usuario ya ha dejado una reseña
         if self.request.user.is_authenticated:
             user_review = reviews.filter(user=self.request.user).first()
             context['user_review'] = user_review
