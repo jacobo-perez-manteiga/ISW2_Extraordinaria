@@ -41,10 +41,15 @@ class DestinationDetailView(generic.DetailView):
 
         if self.request.user.is_authenticated:
             user_review = reviews.filter(user=self.request.user).first()
+            has_purchase = models.Purchase.objects.filter(
+                user=self.request.user, destination=self.object
+            ).exists()
             context['user_review'] = user_review
-            context['can_review'] = not user_review
+            context['has_purchase'] = has_purchase
+            context['can_review'] = has_purchase and not user_review
         else:
             context['can_review'] = False
+            context['has_purchase'] = False
 
         return context
 
@@ -81,13 +86,17 @@ class CruiseDetailView(generic.DetailView):
         context['average_rating'] = round(avg_rating, 1) if avg_rating else 0
         context['review_count'] = reviews.count()
 
-        # Verificar si el usuario ya ha dejado una reseña
         if self.request.user.is_authenticated:
             user_review = reviews.filter(user=self.request.user).first()
+            has_purchase = models.Purchase.objects.filter(
+                user=self.request.user, cruise=cruise
+            ).exists()
             context['user_review'] = user_review
-            context['can_review'] = not user_review
+            context['has_purchase'] = has_purchase
+            context['can_review'] = has_purchase and not user_review
         else:
             context['can_review'] = False
+            context['has_purchase'] = False
 
         return context
 
@@ -134,10 +143,10 @@ class ReviewCreateDestination(LoginRequiredMixin, generic.CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.destination = models.Destination.objects.get(pk=self.kwargs['destination_id'])
-        # Impedir una segunda reseña del mismo usuario sobre el mismo destino
         if request.user.is_authenticated:
-            ya_revisado = self.destination.reviews.filter(user=request.user).exists()
-            if ya_revisado:
+            if not models.Purchase.objects.filter(user=request.user, destination=self.destination).exists():
+                return HttpResponseForbidden("Debes haber comprado este destino para poder reseñarlo.")
+            if self.destination.reviews.filter(user=request.user).exists():
                 return HttpResponseForbidden("Ya has dejado una reseña para este destino.")
         return super().dispatch(request, *args, **kwargs)
 
@@ -165,10 +174,10 @@ class ReviewCreateCruise(LoginRequiredMixin, generic.CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.cruise = models.Cruise.objects.get(pk=self.kwargs['cruise_id'])
-        # Impedir una segunda reseña del mismo usuario sobre el mismo crucero
         if request.user.is_authenticated:
-            ya_revisado = self.cruise.reviews.filter(user=request.user).exists()
-            if ya_revisado:
+            if not models.Purchase.objects.filter(user=request.user, cruise=self.cruise).exists():
+                return HttpResponseForbidden("Debes haber comprado este crucero para poder reseñarlo.")
+            if self.cruise.reviews.filter(user=request.user).exists():
                 return HttpResponseForbidden("Ya has dejado una reseña para este crucero.")
         return super().dispatch(request, *args, **kwargs)
 

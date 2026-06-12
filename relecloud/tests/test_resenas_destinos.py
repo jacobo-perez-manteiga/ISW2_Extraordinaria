@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 
-from relecloud.models import Destination, Review
+from relecloud.models import Destination, Review, Purchase
 
 
 class TestCrearResenaDestino(TestCase):
@@ -15,6 +15,7 @@ class TestCrearResenaDestino(TestCase):
         self.destination = Destination.objects.create(
             name='Marte', description='Planeta rojo'
         )
+        Purchase.objects.create(user=self.user, destination=self.destination)
         self.url = reverse('review_destination', kwargs={'destination_id': self.destination.pk})
 
     def test_usuario_autenticado_puede_crear_resena(self):
@@ -95,10 +96,11 @@ class TestVistaDetalleDestinoResenas(TestCase):
         self.destination = Destination.objects.create(
             name='Luna', description='Satélite natural'
         )
+        Purchase.objects.create(user=self.user, destination=self.destination)
         self.url = reverse('destination_detail', kwargs={'pk': self.destination.pk})
 
     def test_usuario_autenticado_sin_resena_ve_boton_dejar_resena(self):
-        """Usuario autenticado sin reseña previa ve el botón para dejar una reseña."""
+        """Usuario autenticado con compra y sin reseña previa ve el botón para dejar una reseña."""
         self.client.login(username='testuser', password='TestPass123!')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
@@ -130,8 +132,8 @@ class TestVistaDetalleDestinoResenas(TestCase):
         review_url = reverse('review_destination', kwargs={'destination_id': self.destination.pk})
         self.assertNotContains(response, f'href="{review_url}"')
 
-    def test_contexto_can_review_es_true_para_usuario_sin_resena(self):
-        """El contexto can_review es True para usuario autenticado sin reseña."""
+    def test_contexto_can_review_es_true_para_usuario_con_compra_y_sin_resena(self):
+        """El contexto can_review es True para usuario autenticado con compra y sin reseña."""
         self.client.login(username='testuser', password='TestPass123!')
         response = self.client.get(self.url)
         self.assertTrue(response.context['can_review'])

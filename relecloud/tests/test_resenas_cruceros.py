@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 
-from relecloud.models import Cruise, Destination, Review
+from relecloud.models import Cruise, Destination, Review, Purchase
 
 
 class TestCrearResenaCrucero(TestCase):
@@ -19,6 +19,7 @@ class TestCrearResenaCrucero(TestCase):
             name='Crucero Marte', description='Viaje al planeta rojo'
         )
         self.cruise.destinations.add(self.destination)
+        Purchase.objects.create(user=self.user, cruise=self.cruise)
         self.url = reverse('review_cruise', kwargs={'cruise_id': self.cruise.pk})
 
     def test_usuario_autenticado_puede_crear_resena(self):
@@ -99,10 +100,11 @@ class TestVistaDetalleCruceroResenas(TestCase):
         self.cruise = Cruise.objects.create(
             name='Crucero Luna', description='Viaje a la Luna'
         )
+        Purchase.objects.create(user=self.user, cruise=self.cruise)
         self.url = reverse('cruise_detail', kwargs={'pk': self.cruise.pk})
 
     def test_usuario_autenticado_sin_resena_ve_boton_dejar_resena(self):
-        """Usuario autenticado sin reseña previa ve el botón para dejar una reseña."""
+        """Usuario autenticado con compra y sin reseña previa ve el botón para dejar una reseña."""
         self.client.login(username='testuser', password='TestPass123!')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
@@ -134,8 +136,8 @@ class TestVistaDetalleCruceroResenas(TestCase):
         review_url = reverse('review_cruise', kwargs={'cruise_id': self.cruise.pk})
         self.assertNotContains(response, f'href="{review_url}"')
 
-    def test_contexto_can_review_es_true_para_usuario_sin_resena(self):
-        """El contexto can_review es True para usuario autenticado sin reseña."""
+    def test_contexto_can_review_es_true_para_usuario_con_compra_y_sin_resena(self):
+        """El contexto can_review es True para usuario autenticado con compra y sin reseña."""
         self.client.login(username='testuser', password='TestPass123!')
         response = self.client.get(self.url)
         self.assertTrue(response.context['can_review'])
