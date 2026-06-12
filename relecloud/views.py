@@ -102,7 +102,7 @@ class InfoRequestCreate(SuccessMessageMixin, generic.CreateView):
     model = models.InfoRequest
     form_class = InfoRequestForm
     success_url = reverse_lazy('index')
-    success_message = 'Thank you, %(name)s! We will email you when we have more information about %(cruise)s!'
+    success_message = 'Gracias, %(name)s! Te enviarmos un correo cuando tengamos informacion del crucero %(cruise)s!'
 
     def form_valid(self, form):
         response = super().form_valid(form)
