@@ -129,7 +129,6 @@ class InfoRequestCreate(SuccessMessageMixin, generic.CreateView):
 
 
 class ReviewCreateDestination(LoginRequiredMixin, generic.CreateView):
-    """Vista para crear reseña de un destino"""
     model = models.Review
     form_class = ReviewForm
     template_name = 'review_form.html'
@@ -138,9 +137,9 @@ class ReviewCreateDestination(LoginRequiredMixin, generic.CreateView):
     def dispatch(self, request, *args, **kwargs):
         self.destination = models.Destination.objects.get(pk=self.kwargs['destination_id'])
         if request.user.is_authenticated:
-            existing_review = self.destination.reviews.filter(user=request.user).exists()
-            if existing_review:
-                return HttpResponseForbidden("Ya has dejado una reseña para este destino")
+            ya_revisado = self.destination.reviews.filter(user=request.user).exists()
+            if ya_revisado:
+                return HttpResponseForbidden("Ya has dejado una reseña para este destino.")
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -149,7 +148,7 @@ class ReviewCreateDestination(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('destination_detail', kwargs={'pk': self.destination.id})
+        return reverse_lazy('destination_detail', kwargs={'pk': self.destination.pk})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -158,7 +157,6 @@ class ReviewCreateDestination(LoginRequiredMixin, generic.CreateView):
 
 
 class ReviewCreateCruise(LoginRequiredMixin, generic.CreateView):
-    """Vista para crear reseña de un crucero"""
     model = models.Review
     form_class = ReviewForm
     template_name = 'review_form.html'
@@ -167,9 +165,9 @@ class ReviewCreateCruise(LoginRequiredMixin, generic.CreateView):
     def dispatch(self, request, *args, **kwargs):
         self.cruise = models.Cruise.objects.get(pk=self.kwargs['cruise_id'])
         if request.user.is_authenticated:
-            existing_review = self.cruise.reviews.filter(user=request.user).exists()
-            if existing_review:
-                return HttpResponseForbidden("Ya has dejado una reseña para este crucero")
+            ya_revisado = self.cruise.reviews.filter(user=request.user).exists()
+            if ya_revisado:
+                return HttpResponseForbidden("Ya has dejado una reseña para este crucero.")
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -178,7 +176,7 @@ class ReviewCreateCruise(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('cruise_detail', kwargs={'pk': self.cruise.id})
+        return reverse_lazy('cruise_detail', kwargs={'pk': self.cruise.pk})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
