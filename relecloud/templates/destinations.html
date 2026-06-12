@@ -25,10 +25,9 @@ Si puedes imaginarlo, ¡viajamos allí! A continuación encontrarás nuestra lis
         </div>
         <span class="destination-name">{{ destination }}</span>
         {% if destination.avg_rating %}
-        <span class="badge badge-primary rounded-pill ml-auto" title="Puntuación media">{{ destination.avg_rating|floatformat:1 }} ★</span>
-        <span class="badge badge-info rounded-pill ml-2" title="Número de reseñas">{{ destination.review_count }} reseña{{ destination.review_count|pluralize }}</span>
+        <span class="badge badge-primary ml-auto">{{ destination.avg_rating|floatformat:1 }} - {{ destination.review_count }} reseña{{ destination.review_count|pluralize }}</span>
         {% else %}
-        <span class="badge badge-secondary rounded-pill ml-auto" title="Sin valoraciones">Sin valoraciones</span>
+        <span class="badge badge-secondary ml-auto">Sin valoraciones</span>
         {% endif %}
     </a>
     {% empty %}

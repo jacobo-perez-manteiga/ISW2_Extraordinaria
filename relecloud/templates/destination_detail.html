@@ -56,9 +56,10 @@ ReleCloud - {{ destination }}
 <div class="alert alert-info mb-4">
     <strong>Puntuación media:</strong>
     {% if average_rating %}
-        <span class="badge bg-primary">{{ average_rating }}/5</span> ({{ review_count }} reseña{{ review_count|pluralize }})
+        <span class="badge badge-primary rounded-pill" title="Puntuación media">{{ average_rating }} ★</span>
+        <span class="badge badge-info rounded-pill ml-2" title="Número de reseñas">{{ review_count }} reseña{{ review_count|pluralize }}</span>
     {% else %}
-        <span class="text-muted">Sin reseñas aún</span>
+        <span class="badge badge-secondary rounded-pill" title="Sin valoraciones">Sin reseñas aún</span>
     {% endif %}
 </div>
 
@@ -70,7 +71,7 @@ ReleCloud - {{ destination }}
             <div class="card-body">
                 <h5 class="card-title">
                     {{ review.title }}
-                    <span class="badge badge-warning float-right">{{ review.rating }}/5 ⭐</span>
+                    <span class="badge badge-warning float-right">{{ review.rating }}/5</span>
                 </h5>
                 <p class="card-text">{{ review.comment }}</p>
                 <small class="text-muted">

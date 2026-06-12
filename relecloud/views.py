@@ -33,20 +33,15 @@ class DestinationDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        destination = self.get_object()
-
-        # Obtener reseñas del destino
-        reviews = destination.reviews.all()
+        reviews = list(self.object.reviews.all())
         context['reviews'] = reviews
 
-        # Calcular puntuación media
-        avg_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+        avg_rating = sum(r.rating for r in reviews) / len(reviews) if reviews else None
         context['average_rating'] = round(avg_rating, 1) if avg_rating else 0
-        context['review_count'] = reviews.count()
+        context['review_count'] = len(reviews)
 
-        # Verificar si el usuario ya ha dejado una reseña
         if self.request.user.is_authenticated:
-            user_review = reviews.filter(user=self.request.user).first()
+            user_review = next((r for r in reviews if r.user == self.request.user), None)
             context['user_review'] = user_review
             context['can_review'] = not user_review
         else:
