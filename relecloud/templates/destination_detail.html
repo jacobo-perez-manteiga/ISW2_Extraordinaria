@@ -19,7 +19,7 @@ ReleCloud - {{ destination }}
 <p>
 {{ destination.description }}
 </p>
-<p>You can explore {{ destination }} on the following cruises:</p>
+<p>Puedes visitar {{ destination }} en los siguientes cruceros:</p>
 <ul class="list-group">
     {% for cruise in destination.cruises.all %}
     <a class="list-group-item list-group-item-action" href="{% url 'cruise_detail' cruise.id %}">{{ cruise }}</a>
@@ -42,7 +42,13 @@ ReleCloud - {{ destination }}
     {% endif %}
 {% else %}
     <div class="alert alert-info" role="alert">
-        <a href="{% url 'login' %}">Inicia sesión</a> para dejar una reseña.
+        <p class="mb-2">Debes iniciar sesión o registrarte para dejar una reseña.</p>
+        <a href="{% url 'account_login' %}?next={{ request.path }}" class="btn btn-primary btn-sm mr-2">
+            Iniciar sesión
+        </a>
+        <a href="{% url 'account_signup' %}?next={{ request.path }}" class="btn btn-outline-primary btn-sm">
+            Registrarse
+        </a>
     </div>
 {% endif %}
 
@@ -64,7 +70,7 @@ ReleCloud - {{ destination }}
             <div class="card-body">
                 <h5 class="card-title">
                     {{ review.title }}
-                    <span class="badge bg-warning text-dark float-end">{{ review.rating }}/5 ⭐</span>
+                    <span class="badge badge-warning float-right">{{ review.rating }}/5 ⭐</span>
                 </h5>
                 <p class="card-text">{{ review.comment }}</p>
                 <small class="text-muted">
