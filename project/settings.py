@@ -51,8 +51,8 @@ INSTALLED_APPS = [
     'crispy_bootstrap4',
     # relecloud antes que allauth para que nuestros templates tengan prioridad en APP_DIRS
     'relecloud.apps.RelecloudConfig',
-    'allauth',
-    'allauth.account',
+    'allauth',          # núcleo de django-allauth
+    'allauth.account',  # gestión de cuentas (registro, login, logout)
 ]
 
 MIDDLEWARE = [
@@ -64,7 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
+    'allauth.account.middleware.AccountMiddleware',  # requerido por allauth desde v0.56
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -188,8 +188,9 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # --- django-allauth ---
-SITE_ID = 1
+SITE_ID = 1  # requerido por django.contrib.sites, usado internamente por allauth
 
+# Backends de autenticación: Django nativo + allauth
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',

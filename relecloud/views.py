@@ -129,13 +129,16 @@ class InfoRequestCreate(SuccessMessageMixin, generic.CreateView):
 
 
 class ReviewCreateDestination(LoginRequiredMixin, generic.CreateView):
+    """Crea una reseña para un destino. Requiere sesión activa."""
+
     model = models.Review
     form_class = ReviewForm
     template_name = 'review_form.html'
-    login_url = 'account_login'
+    login_url = 'account_login'  # allauth gestiona la redirección al login
 
     def dispatch(self, request, *args, **kwargs):
         self.destination = models.Destination.objects.get(pk=self.kwargs['destination_id'])
+        # Impedir una segunda reseña del mismo usuario sobre el mismo destino
         if request.user.is_authenticated:
             ya_revisado = self.destination.reviews.filter(user=request.user).exists()
             if ya_revisado:
@@ -157,13 +160,16 @@ class ReviewCreateDestination(LoginRequiredMixin, generic.CreateView):
 
 
 class ReviewCreateCruise(LoginRequiredMixin, generic.CreateView):
+    """Crea una reseña para un crucero. Requiere sesión activa."""
+
     model = models.Review
     form_class = ReviewForm
     template_name = 'review_form.html'
-    login_url = 'account_login'
+    login_url = 'account_login'  # allauth gestiona la redirección al login
 
     def dispatch(self, request, *args, **kwargs):
         self.cruise = models.Cruise.objects.get(pk=self.kwargs['cruise_id'])
+        # Impedir una segunda reseña del mismo usuario sobre el mismo crucero
         if request.user.is_authenticated:
             ya_revisado = self.cruise.reviews.filter(user=request.user).exists()
             if ya_revisado:

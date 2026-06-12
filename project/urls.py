@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', include('relecloud.urls')),
-    path('accounts/', include('allauth.urls')),
+    path('accounts/', include('allauth.urls')),  # login, logout, signup en /accounts/
     path('admin/', admin.site.urls),
 ]
 
