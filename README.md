@@ -9,6 +9,7 @@ Relecloud es una plataforma web diseñada para gestionar y comercializar experie
 * **Flota Estelar:** cada una de las naves está asignada a una serie de destinos.
 * **Gestión de Usuarios:** solicitudes de información mediante formulario de contacto con notificaciones automáticas vía email (SMTP).
 
+
 ## Grupo de clase 3B-4:
 
 * Jacobo Pérez Manteiga
