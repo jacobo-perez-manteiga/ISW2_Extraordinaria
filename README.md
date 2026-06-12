@@ -16,3 +16,4 @@ Relecloud es una plataforma web diseñada para gestionar y comercializar experie
 * Geert Prummel Sáiz
 * Luis Sánchez Agulla
 * Sergio del Olmo Riol
+* Daniel Minguito Alaminos
