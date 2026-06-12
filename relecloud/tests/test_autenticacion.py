@@ -6,7 +6,6 @@ from relecloud.models import Cruise, Destination
 
 
 class TestAccesibilidadPaginasAuth(TestCase):
-    """Las páginas de autenticación son accesibles sin estar autenticado."""
 
     def test_pagina_login_devuelve_200(self):
         response = self.client.get(reverse('account_login'))
@@ -24,7 +23,6 @@ class TestAccesibilidadPaginasAuth(TestCase):
 
 
 class TestTemplatesPaginasAuth(TestCase):
-    """Login y signup renderizan con el template base de ReleCloud."""
 
     def test_login_usa_template_base(self):
         response = self.client.get(reverse('account_login'))
@@ -44,7 +42,6 @@ class TestTemplatesPaginasAuth(TestCase):
 
 
 class TestNavbarSegunEstadoSesion(TestCase):
-    """El navbar muestra opciones distintas según si hay sesión activa o no."""
 
     def test_navbar_muestra_enlace_login_sin_sesion(self):
         response = self.client.get(reverse('index'))
@@ -68,7 +65,6 @@ class TestNavbarSegunEstadoSesion(TestCase):
 
 
 class TestFlujoAutenticacion(TestCase):
-    """Flujo completo de registro, inicio y cierre de sesión con allauth."""
 
     def test_registro_crea_usuario_en_base_de_datos(self):
         self.client.post(reverse('account_signup'), {
@@ -104,7 +100,6 @@ class TestFlujoAutenticacion(TestCase):
 
 
 class TestRedireccionVistasSinAutenticar(TestCase):
-    """Un usuario anónimo es redirigido a account_login al acceder a vistas protegidas."""
 
     @classmethod
     def setUpTestData(cls):

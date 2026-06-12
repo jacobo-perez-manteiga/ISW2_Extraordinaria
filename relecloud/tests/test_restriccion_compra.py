@@ -6,9 +6,6 @@ from relecloud.models import Cruise, Destination, Review, Purchase
 
 
 class TestRestriccionCompraDestino(TestCase):
-    """
-    TDD: Solo usuarios que han comprado un destino pueden reseñarlo.
-    """
 
     def setUp(self):
         self.user = User.objects.create_user('testuser', password='TestPass123!')
@@ -18,7 +15,6 @@ class TestRestriccionCompraDestino(TestCase):
         self.url = reverse('review_destination', kwargs={'destination_id': self.destination.pk})
 
     def test_usuario_sin_compra_recibe_403_al_resenar_destino(self):
-        """Usuario autenticado sin compra recibe 403 al intentar reseñar."""
         self.client.login(username='testuser', password='TestPass123!')
         response = self.client.post(self.url, {
             'rating': 5, 'title': 'Genial', 'comment': 'Increíble experiencia',
@@ -27,13 +23,11 @@ class TestRestriccionCompraDestino(TestCase):
         self.assertEqual(Review.objects.count(), 0)
 
     def test_usuario_sin_compra_recibe_403_en_get_destino(self):
-        """Usuario autenticado sin compra recibe 403 también en GET."""
         self.client.login(username='testuser', password='TestPass123!')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 403)
 
     def test_usuario_con_compra_puede_resenar_destino(self):
-        """Usuario autenticado con compra puede crear una reseña."""
         Purchase.objects.create(user=self.user, destination=self.destination)
         self.client.login(username='testuser', password='TestPass123!')
         response = self.client.post(self.url, {
@@ -43,14 +37,12 @@ class TestRestriccionCompraDestino(TestCase):
         self.assertEqual(Review.objects.first().user, self.user)
 
     def test_can_review_falso_para_usuario_sin_compra(self):
-        """El contexto can_review es False para usuario autenticado sin compra."""
         self.client.login(username='testuser', password='TestPass123!')
         url_detail = reverse('destination_detail', kwargs={'pk': self.destination.pk})
         response = self.client.get(url_detail)
         self.assertFalse(response.context['can_review'])
 
     def test_can_review_verdadero_para_usuario_con_compra_y_sin_resena(self):
-        """El contexto can_review es True para usuario con compra y sin reseña previa."""
         Purchase.objects.create(user=self.user, destination=self.destination)
         self.client.login(username='testuser', password='TestPass123!')
         url_detail = reverse('destination_detail', kwargs={'pk': self.destination.pk})
@@ -58,14 +50,12 @@ class TestRestriccionCompraDestino(TestCase):
         self.assertTrue(response.context['can_review'])
 
     def test_has_purchase_en_contexto_sin_compra(self):
-        """El contexto has_purchase es False cuando el usuario no ha comprado."""
         self.client.login(username='testuser', password='TestPass123!')
         url_detail = reverse('destination_detail', kwargs={'pk': self.destination.pk})
         response = self.client.get(url_detail)
         self.assertFalse(response.context['has_purchase'])
 
     def test_has_purchase_en_contexto_con_compra(self):
-        """El contexto has_purchase es True cuando el usuario ha comprado."""
         Purchase.objects.create(user=self.user, destination=self.destination)
         self.client.login(username='testuser', password='TestPass123!')
         url_detail = reverse('destination_detail', kwargs={'pk': self.destination.pk})
@@ -74,9 +64,6 @@ class TestRestriccionCompraDestino(TestCase):
 
 
 class TestRestriccionCompraCrucero(TestCase):
-    """
-    TDD: Solo usuarios que han comprado un crucero pueden reseñarlo.
-    """
 
     def setUp(self):
         self.user = User.objects.create_user('testuser', password='TestPass123!')
@@ -90,7 +77,6 @@ class TestRestriccionCompraCrucero(TestCase):
         self.url = reverse('review_cruise', kwargs={'cruise_id': self.cruise.pk})
 
     def test_usuario_sin_compra_recibe_403_al_resenar_crucero(self):
-        """Usuario autenticado sin compra recibe 403 al intentar reseñar."""
         self.client.login(username='testuser', password='TestPass123!')
         response = self.client.post(self.url, {
             'rating': 5, 'title': 'Genial', 'comment': 'Increíble experiencia',
@@ -99,13 +85,11 @@ class TestRestriccionCompraCrucero(TestCase):
         self.assertEqual(Review.objects.count(), 0)
 
     def test_usuario_sin_compra_recibe_403_en_get_crucero(self):
-        """Usuario autenticado sin compra recibe 403 también en GET."""
         self.client.login(username='testuser', password='TestPass123!')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 403)
 
     def test_usuario_con_compra_puede_resenar_crucero(self):
-        """Usuario autenticado con compra puede crear una reseña."""
         Purchase.objects.create(user=self.user, cruise=self.cruise)
         self.client.login(username='testuser', password='TestPass123!')
         response = self.client.post(self.url, {
@@ -115,14 +99,12 @@ class TestRestriccionCompraCrucero(TestCase):
         self.assertEqual(Review.objects.first().user, self.user)
 
     def test_can_review_falso_para_usuario_sin_compra(self):
-        """El contexto can_review es False para usuario autenticado sin compra."""
         self.client.login(username='testuser', password='TestPass123!')
         url_detail = reverse('cruise_detail', kwargs={'pk': self.cruise.pk})
         response = self.client.get(url_detail)
         self.assertFalse(response.context['can_review'])
 
     def test_can_review_verdadero_para_usuario_con_compra_y_sin_resena(self):
-        """El contexto can_review es True para usuario con compra y sin reseña previa."""
         Purchase.objects.create(user=self.user, cruise=self.cruise)
         self.client.login(username='testuser', password='TestPass123!')
         url_detail = reverse('cruise_detail', kwargs={'pk': self.cruise.pk})
@@ -130,14 +112,12 @@ class TestRestriccionCompraCrucero(TestCase):
         self.assertTrue(response.context['can_review'])
 
     def test_has_purchase_en_contexto_sin_compra(self):
-        """El contexto has_purchase es False cuando el usuario no ha comprado."""
         self.client.login(username='testuser', password='TestPass123!')
         url_detail = reverse('cruise_detail', kwargs={'pk': self.cruise.pk})
         response = self.client.get(url_detail)
         self.assertFalse(response.context['has_purchase'])
 
     def test_has_purchase_en_contexto_con_compra(self):
-        """El contexto has_purchase es True cuando el usuario ha comprado."""
         Purchase.objects.create(user=self.user, cruise=self.cruise)
         self.client.login(username='testuser', password='TestPass123!')
         url_detail = reverse('cruise_detail', kwargs={'pk': self.cruise.pk})

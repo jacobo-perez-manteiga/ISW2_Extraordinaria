@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from . import models
 from django.views import generic
-from django.contrib.messages.views import SuccessMessageMixin  
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib import messages
@@ -76,12 +76,9 @@ class CruiseDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cruise = self.get_object()
-
-        # Obtener reseñas del crucero
         reviews = cruise.reviews.all()
         context['reviews'] = reviews
 
-        # Calcular puntuación media
         avg_rating = reviews.aggregate(Avg('rating'))['rating__avg']
         context['average_rating'] = round(avg_rating, 1) if avg_rating else 0
         context['review_count'] = reviews.count()
@@ -105,13 +102,11 @@ class InfoRequestCreate(SuccessMessageMixin, generic.CreateView):
     model = models.InfoRequest
     form_class = InfoRequestForm
     success_url = reverse_lazy('index')
-    success_message = 'Thank you, %(name)s! We will email you when we have more information about %(cruise)s!'
-    
+    success_message = 'Gracias, %(name)s! Te enviarmos un correo cuando tengamos informacion del crucero %(cruise)s!'
+
     def form_valid(self, form):
-        # Save the model instance first (super handles saving and sets self.object)
         response = super().form_valid(form)
 
-        # Prepare confirmation email to send to the requester
         subject = f"ReleCloud: informacion del mail recibida para {self.object.cruise}"
         body = (
             f"Hola {self.object.name},\n\n"
@@ -134,12 +129,10 @@ class InfoRequestCreate(SuccessMessageMixin, generic.CreateView):
 
 
 class ReviewCreateDestination(LoginRequiredMixin, generic.CreateView):
-    """Crea una reseña para un destino. Requiere sesión activa."""
-
     model = models.Review
     form_class = ReviewForm
     template_name = 'review_form.html'
-    login_url = 'account_login'  # allauth gestiona la redirección al login
+    login_url = 'account_login'
 
     def dispatch(self, request, *args, **kwargs):
         self.destination = models.Destination.objects.get(pk=self.kwargs['destination_id'])
@@ -165,12 +158,10 @@ class ReviewCreateDestination(LoginRequiredMixin, generic.CreateView):
 
 
 class ReviewCreateCruise(LoginRequiredMixin, generic.CreateView):
-    """Crea una reseña para un crucero. Requiere sesión activa."""
-
     model = models.Review
     form_class = ReviewForm
     template_name = 'review_form.html'
-    login_url = 'account_login'  # allauth gestiona la redirección al login
+    login_url = 'account_login'
 
     def dispatch(self, request, *args, **kwargs):
         self.cruise = models.Cruise.objects.get(pk=self.kwargs['cruise_id'])

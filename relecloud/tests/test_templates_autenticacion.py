@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 
 class TestRenderizadoTemplateLogin(TestCase):
-    """El template de login se renderiza correctamente."""
 
     def test_pagina_login_devuelve_200(self):
         response = self.client.get(reverse('account_login'))
@@ -30,7 +29,6 @@ class TestRenderizadoTemplateLogin(TestCase):
 
 
 class TestRenderizadoTemplateSignup(TestCase):
-    """El template de registro se renderiza correctamente."""
 
     def test_pagina_signup_devuelve_200(self):
         response = self.client.get(reverse('account_signup'))
@@ -56,7 +54,6 @@ class TestRenderizadoTemplateSignup(TestCase):
 
 
 class TestRenderizadoTemplateLogout(TestCase):
-    """El template de logout se renderiza correctamente."""
 
     def setUp(self):
         User.objects.create_user(username='tester', password='Pass1234!')
@@ -85,30 +82,24 @@ class TestRenderizadoTemplateLogout(TestCase):
 
 
 class TestDisenoVisualTemplates(TestCase):
-    """Los templates de autenticación mantienen el diseño visual de ReleCloud."""
 
     def test_login_contiene_contenedor_responsivo(self):
-        """El formulario de login debe estar centrado con columna Bootstrap."""
         response = self.client.get(reverse('account_login'))
         self.assertContains(response, 'col-md-6')
 
     def test_signup_contiene_contenedor_responsivo(self):
-        """El formulario de registro debe estar centrado con columna Bootstrap."""
         response = self.client.get(reverse('account_signup'))
         self.assertContains(response, 'col-md-6')
 
     def test_login_contiene_estructura_card(self):
-        """El formulario de login debe estar envuelto en una card Bootstrap."""
         response = self.client.get(reverse('account_login'))
         self.assertContains(response, 'card-body')
 
     def test_signup_contiene_estructura_card(self):
-        """El formulario de registro debe estar envuelto en una card Bootstrap."""
         response = self.client.get(reverse('account_signup'))
         self.assertContains(response, 'card-body')
 
     def test_logout_contiene_estructura_card(self):
-        """La confirmación de logout debe estar envuelta en una card Bootstrap."""
         User.objects.create_user(username='tester', password='Pass1234!')
         self.client.login(username='tester', password='Pass1234!')
         response = self.client.get(reverse('account_logout'))
