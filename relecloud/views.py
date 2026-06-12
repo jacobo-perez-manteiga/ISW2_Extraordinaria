@@ -20,9 +20,12 @@ def about(request):
 def destinations(request):
     all_destinations = models.Destination.objects.annotate(
         avg_rating=Avg('reviews__rating'),
-        review_count=Count('reviews')
-    ).order_by('-review_count', '-avg_rating')
-    return render(request, 'destinations.html', {'destinations': all_destinations})
+        review_count=Count('reviews', distinct=True)
+    ).order_by('-review_count', '-avg_rating', 'name')
+    return render(request, 'destinations.html', {
+        'destinations': all_destinations,
+        'destination_count': all_destinations.count(),
+    })
 
 class DestinationDetailView(generic.DetailView):
     template_name = 'destination_detail.html'
